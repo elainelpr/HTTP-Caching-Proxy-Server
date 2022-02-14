@@ -16,6 +16,7 @@ private:
 public:
     Client(const char *_hostname, const char *_port):Socket(_hostname, _port){}
     void proxy_connet_server( std::string proxy_send_server);
+    //void proxy_connet_server();
     ~Client();
 };
 #endif /* client_hpp */

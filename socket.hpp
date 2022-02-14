@@ -28,6 +28,7 @@ public:
     const char *hostname;
     const char *port;
     char *addr_client;
+    struct sockaddr_in server_addr;
     
 public:
     Socket(const char * _hostname, const char * _port);

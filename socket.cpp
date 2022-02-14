@@ -10,28 +10,19 @@
 //
 
 #include "socket.hpp"
-
+#include <arpa/inet.h>
 Socket::Socket(const char *_hostname, const char  *_port) : hostname(_hostname), port(_port) {
-    memset(&addr_info, 0, sizeof(addr_info));
-    addr_info.ai_family = AF_INET; // IPv4
-    addr_info.ai_socktype = SOCK_STREAM; // TCP
-
-    //convert addr_info into socket_addr_info
-    if(getaddrinfo(hostname, port, &addr_info, &addr_info_list) != 0){
-        perror("Fail to get socket address information.");
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if(sockfd==-1){
+        perror("Fail to create the socket\n");
         exit(EXIT_FAILURE);
     }
-
-    sockfd = socket(addr_info_list->ai_family,
-                    addr_info_list->ai_socktype,
-                    addr_info_list->ai_protocol);
-    if(sockfd == -1){
-        perror("Fail to create the socket.");
-        exit(EXIT_FAILURE);
-    }
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = inet_addr(hostname);
+    server_addr.sin_port = htons(atoi(port));
 }
 
 Socket::~Socket() {
-    //close(sockfd);
+    close(sockfd);
     //freeaddrinfo(addr_info_list);
 }

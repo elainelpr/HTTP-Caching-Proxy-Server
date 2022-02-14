@@ -24,7 +24,8 @@ Server::Server(const char *_hostname, const char *_port) : Socket(_hostname, _po
         perror("Fail to use port again\n");
         exit(EXIT_FAILURE);
     }
-    if(bind(sockfd, addr_info_list->ai_addr, addr_info_list->ai_addrlen) == -1){
+    
+    if(bind(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1){
         perror("Fail to bind to server IP to the socket");
         exit(EXIT_FAILURE);
     }
@@ -62,7 +63,6 @@ void Server::Receive_test(){
     }
 
     //parse the request
-    
     std::string parse_req = buffer;
     std::string line = "\r\n";
     size_t get = parse_req.find(line);
@@ -92,17 +92,19 @@ void Server::Receive_test(){
             exit(EXIT_FAILURE);
         }
         addr_client = inet_ntoa(*(struct in_addr*)host_name->h_addr_list[0]);
+
         std::string req_data = parse_req.substr(get);
         proxy_send_server = GET_method  + req_data;
-        std::cout<<"Receive from the client"<<"\n"<<proxy_send_server<<std::endl;
-        std::cout<<addr_client<<std::endl;
+        //proxy_send_server = buffer;
+        std::cout<<"Receive from the client: "<<"\n"<<proxy_send_server<<std::endl;
     }
     
 }
 
 
 Server::~Server(){
-    //close(connectfd);
+    close(connectfd);
 }
+
 
 
