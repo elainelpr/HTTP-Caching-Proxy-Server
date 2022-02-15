@@ -24,18 +24,17 @@ void Client::proxy_connet_server(std::string proxy_send_server){
     }
     
     //char proxy_recv[10000] = "";
-    recv_resp = recv(sockfd, proxy_recv_mssg.data(), proxy_recv_mssg.size(), 0);
+    proxy_recv_mssg.resize(10000);
+    recv_resp = recv(sockfd, proxy_recv_mssg.data(), proxy_recv_mssg.size(),0);
     if(recv_resp==-1){
         perror("Fail to receive the message from the server\n");
         exit(EXIT_FAILURE);
     }
     
-    std::cout<<proxy_recv_mssg.data()<<std::endl;
-
+    std::cout<<recv_resp<<std::endl;
 }
 
 void Client::proxy_client(int accept_fd){
-    
     if(send(accept_fd, proxy_recv_mssg.data(), recv_resp, 0)==-1){
         perror("Proxy fail to send message to the client\n");
         exit(EXIT_FAILURE);
@@ -46,3 +45,4 @@ Client::~Client(){}
 
 
 
+Content-Length
