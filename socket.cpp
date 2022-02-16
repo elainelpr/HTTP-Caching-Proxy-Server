@@ -30,8 +30,11 @@ Socket::Socket(const char *_hostname, const char  *_port) : hostname(_hostname),
     }
 }
 
+char *Socket::get_addrClient(){
+    return addr_client;
+}
+
 Socket::~Socket() {
-    //close(sockfd);
-    //close(sockfd);
-    //freeaddrinfo(addr_info_list);
+    close(sockfd);
+    freeaddrinfo(addr_info_list);
 }

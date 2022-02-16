@@ -56,13 +56,22 @@ void Server::Accept() {
 
 void Server::Receive_test(){
     //vector char
-    char buffer[4000]="";
-    if(recv(connectfd, buffer, 4000, 0)==-1){
-        perror("Fail to receive the message from client\n");
-        exit(EXIT_FAILURE);
+    char buffer[1024]="";
+    while(1){
+        std::cout<<"**********"<<std::endl;
+        ssize_t _recv = recv(connectfd, buffer, 1024, 0);
+        if(_recv==-1){
+            perror("Fail to receive the message from client\n");
+            exit(EXIT_FAILURE);
+        }
+        std::cout<<buffer<<std::endl;
+        std::string parse_req = buffer;
+        if(parse_req.find("\r\n\r\n")!=-1){
+            break;
+        }
     }
 
-    //parse the request
+    //parse the request, extract the first line
     std::string parse_req = buffer;
     std::string line = "\r\n";
     size_t get = parse_req.find(line);
@@ -77,33 +86,46 @@ void Server::Receive_test(){
     //extract the middle part(www.cmu.edu)
     std::string argument = req_head.substr(method+1, version-method);
     if(method_part == "GET"){
-        size_t first_slash = argument.find("/");
-        std::string first = argument.substr(first_slash+1);
-        size_t second_slash = first.find("/");
-        std::string second = first.substr(second_slash+1);
-        size_t res_part = second.find("/");
-        std::string argument_part = second.substr(res_part);
-        std::string GET_method = method_part+" "+argument_part+version_part;
-        //extract the domain name
-        std::string domain_name = argument.substr(first_slash+2, res_part);
-        struct hostent *host_name = gethostbyname(domain_name.c_str());
-        if(!host_name){
-            perror("The domain name is wrong\n");
-            exit(EXIT_FAILURE);
-        }
-        addr_client = inet_ntoa(*(struct in_addr*)host_name->h_addr_list[0]);
-
+        //parse the http://www.....
+        std::string arg_part = GET_method(argument);
+        std::string GET_method = method_part+" "+arg_part+version_part;
         std::string req_data = parse_req.substr(get);
         proxy_send_server = GET_method  + req_data;
-        //proxy_send_server = buffer;
         std::cout<<"Receive from the client: "<<"\n"<<proxy_send_server<<std::endl;
     }
-    
 }
 
+std::string Server::GET_method(std::string argument){
+    size_t first_slash = argument.find("/");
+    std::string first = argument.substr(first_slash+1);
+    size_t second_slash = first.find("/");
+    std::string second = first.substr(second_slash+1);
+    size_t res_part = second.find("/");
+    std::string argument_part = second.substr(res_part);
+    
+    //extract the domain name
+    std::string domain_name = argument.substr(first_slash+2, res_part);
+    struct hostent *host_name = gethostbyname(domain_name.c_str());
+    if(!host_name){
+        perror("The domain name is wrong\n");
+        exit(EXIT_FAILURE);
+    }
+    //Convert the domain name to IP address
+    addr_client = inet_ntoa(*(struct in_addr*)host_name->h_addr_list[0]);
+    return argument_part;
+
+}
+
+int Server::get_connectfd(){
+    return connectfd;
+}
+
+std::string Server::get_proxySendSerevr(){
+    return proxy_send_server;
+}
 
 Server::~Server(){
-    //close(connectfd);
+    close(connectfd);
 }
 
 

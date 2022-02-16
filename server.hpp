@@ -17,7 +17,7 @@
 
 class Server : public Socket{
 //private:
-public:
+protected:
     //int connectfd;
     std::vector<int> connectfd_list;
     int connectfd;
@@ -26,7 +26,9 @@ public:
     Server(const char *_hostname, const char *_port);
     void Accept();
     void Receive_test();
-    int connet_fd();
+    std::string GET_method(std::string argument);
+    int get_connectfd();
+    std::string get_proxySendSerevr();
     ~Server();
 };
 

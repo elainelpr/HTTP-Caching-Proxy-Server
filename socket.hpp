@@ -22,7 +22,7 @@
 class Socket
 {
 //这里改了，原来是protected
-public:
+protected:
     int sockfd;
     struct addrinfo addr_info, *addr_info_list;
     const char *hostname;
@@ -32,6 +32,7 @@ public:
     
 public:
     Socket(const char * _hostname, const char * _port);
+    char *get_addrClient();
     ~Socket();
 };
 #endif //HW2_HTTP_PROXY_SOCKET_H
