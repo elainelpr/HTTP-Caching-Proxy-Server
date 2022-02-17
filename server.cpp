@@ -56,23 +56,47 @@ void Server::Accept() {
 
 void Server::Receive_test(){
     //vector char
-    char buffer[1024]="";
-    while(1){
-        std::cout<<"**********"<<std::endl;
-        ssize_t _recv = recv(connectfd, buffer, 1024, 0);
-        if(_recv==-1){
-            perror("Fail to receive the message from client\n");
-            exit(EXIT_FAILURE);
-        }
-        std::cout<<buffer<<std::endl;
-        std::string parse_req = buffer;
-        if(parse_req.find("\r\n\r\n")!=-1){
-            break;
-        }
+    char buffer[65536]="";
+    //char header[10]="";
+    std::cout<<"**********"<<std::endl;
+    ssize_t _recv = recv(connectfd, buffer, 65536, 0);
+    if(_recv==-1){
+        perror("Fail to receive the message from client\n");
+        exit(EXIT_FAILURE);
+        
     }
-
-    //parse the request, extract the first line
     std::string parse_req = buffer;
+    /*size_t length = parse_req.find("Content-Length");
+    if(length!=std::string::npos){
+        //find the content-length position
+        std::string contentLength = parse_req.substr(length);
+        //extract the line of content-length
+        size_t length_line = contentLength.find("\r\n");
+        std::string content_length = contentLength.substr(0, length_line);
+        std::cout<<"8********************"<<std::endl;
+        std::cout<<content_length<<std::endl;
+        //the content_length is Content-Length: 81.
+        //extract the 81 from content_length, find " "first
+        size_t len = content_length.find(" ");
+        //Length is 81
+        std::string Length = content_length.substr(len);
+        //convert the string "81" to number 81
+        ssize_t _len = stoi(Length);
+        std::cout<<_len<<std::endl;
+        _len = _len - _recv;
+        while(_len>0){
+            _recv = recv(connectfd, buffer, 1024, 0);
+            if(_recv==-1){
+                perror("Fail to receive the message\n");
+                exit(EXIT_FAILURE);
+            }
+            std::string buf = buffer;
+            parse_req+=buf;
+            _len = _len - _recv;
+            std::cout<<"The rest len is"<<std::endl;
+        }
+    }*/
+    //parse the request, extract the first line
     std::string line = "\r\n";
     size_t get = parse_req.find(line);
     //extract the first line of the client message(ex: GET www...... HTTP/1.1)
@@ -85,7 +109,7 @@ void Server::Receive_test(){
     std::string version_part = req_head.substr(version+1);
     //extract the middle part(www.cmu.edu)
     std::string argument = req_head.substr(method+1, version-method);
-    if(method_part == "GET"){
+    if(method_part == "GET" || method_part=="POST"){
         //parse the http://www.....
         std::string arg_part = GET_method(argument);
         std::string GET_method = method_part+" "+arg_part+version_part;

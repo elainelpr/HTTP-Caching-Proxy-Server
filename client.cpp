@@ -9,6 +9,7 @@
 #include <arpa/inet.h>
 #include <vector>
 #include <iostream>
+
 void Client::proxy_connet_server(std::string proxy_send_server, int accept_fd){
     int _connect = connect(sockfd, addr_info_list->ai_addr, addr_info_list->ai_addrlen);
     if(_connect==-1){
@@ -37,7 +38,7 @@ void Client::proxy_connet_server(std::string proxy_send_server, int accept_fd){
             exit(EXIT_FAILURE);
         }
     }
-    //std::cout<<proxy_recv_mssg.data()<<std::endl;
+    std::cout<<proxy_recv_mssg.data()<<std::endl;
 }
 
 Client::~Client(){}
