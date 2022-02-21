@@ -15,7 +15,7 @@
 #include "client.hpp"
 using namespace std;
 int main(){
-    Server server_test("192.168.1.38", "12345");
+    Server server_test("0.0.0.0", "12345");
     server_test.Accept();
     server_test.Receive_test();
     char *addrClient = server_test.get_addrClient();

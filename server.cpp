@@ -66,36 +66,6 @@ void Server::Receive_test(){
         
     }
     std::string parse_req = buffer;
-    /*size_t length = parse_req.find("Content-Length");
-    if(length!=std::string::npos){
-        //find the content-length position
-        std::string contentLength = parse_req.substr(length);
-        //extract the line of content-length
-        size_t length_line = contentLength.find("\r\n");
-        std::string content_length = contentLength.substr(0, length_line);
-        std::cout<<"8********************"<<std::endl;
-        std::cout<<content_length<<std::endl;
-        //the content_length is Content-Length: 81.
-        //extract the 81 from content_length, find " "first
-        size_t len = content_length.find(" ");
-        //Length is 81
-        std::string Length = content_length.substr(len);
-        //convert the string "81" to number 81
-        ssize_t _len = stoi(Length);
-        std::cout<<_len<<std::endl;
-        _len = _len - _recv;
-        while(_len>0){
-            _recv = recv(connectfd, buffer, 1024, 0);
-            if(_recv==-1){
-                perror("Fail to receive the message\n");
-                exit(EXIT_FAILURE);
-            }
-            std::string buf = buffer;
-            parse_req+=buf;
-            _len = _len - _recv;
-            std::cout<<"The rest len is"<<std::endl;
-        }
-    }*/
     //parse the request, extract the first line
     std::string line = "\r\n";
     size_t get = parse_req.find(line);
@@ -109,6 +79,8 @@ void Server::Receive_test(){
     std::string version_part = req_head.substr(version+1);
     //extract the middle part(www.cmu.edu)
     std::string argument = req_head.substr(method+1, version-method);
+    std::cout<<"************"<<std::endl;
+    std::cout<<argument<<std::endl;
     if(method_part == "GET" || method_part=="POST"){
         //parse the http://www.....
         std::string arg_part = GET_method(argument);
@@ -116,6 +88,10 @@ void Server::Receive_test(){
         std::string req_data = parse_req.substr(get);
         proxy_send_server = GET_method  + req_data;
         std::cout<<"Receive from the client: "<<"\n"<<proxy_send_server<<std::endl;
+    }
+    
+    if(method_part == "CONNECT"){
+        
     }
 }
 
@@ -137,7 +113,6 @@ std::string Server::GET_method(std::string argument){
     //Convert the domain name to IP address
     addr_client = inet_ntoa(*(struct in_addr*)host_name->h_addr_list[0]);
     return argument_part;
-
 }
 
 int Server::get_connectfd(){
@@ -151,6 +126,8 @@ std::string Server::get_proxySendSerevr(){
 Server::~Server(){
     close(connectfd);
 }
+
+
 
 
 
