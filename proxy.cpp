@@ -41,7 +41,7 @@ socket_info create_socket(const char *hostname, const char *port){
 
 
 void Proxy::proxy_bindListen_accept(){
-    socket_info clientServer_info = create_socket("0.0.0.0", "12345");
+    socket_info clientServer_info = create_socket("192.168.1.142", "12345");
     int opt = 1;
     if(setsockopt(clientServer_info.socket_fd, SOL_SOCKET,SO_REUSEADDR, (const void *)&opt, sizeof(opt))==-1){
         perror("Fail to use port again\n");
@@ -58,45 +58,50 @@ void Proxy::proxy_bindListen_accept(){
         exit(EXIT_FAILURE);
     }
     //Accept the request from client
-    struct sockaddr_in clientaddr;
-    socklen_t clientaddr_len = sizeof(clientaddr);
-    clientProxy_connectfd = accept(clientServer_info.socket_fd, (struct sockaddr*)&clientaddr, &clientaddr_len);
-    std::cout<<clientProxy_connectfd<<std::endl;
-    
-    if(clientProxy_connectfd == -1){
-        perror("Fail to accept client's connection");
-        exit(EXIT_FAILURE);
-    }
-    
-    //pthread_create
-    pthread_t tid;
-    void *a = NULL;
-    pthread_create(&tid,NULL, Proxy::proxyServer_serverClient, &a);
-    //线程分离
-    pthread_detach(tid);
+    while(1){
+        struct sockaddr_in clientaddr;
+        socklen_t clientaddr_len = sizeof(clientaddr);
+        clientProxy_connectfd = accept(clientServer_info.socket_fd, (struct sockaddr*)&clientaddr, &clientaddr_len);
+        std::cout<<clientProxy_connectfd<<std::endl;
+        
+        if(clientProxy_connectfd == -1){
+            perror("Fail to accept client's connection");
+            exit(EXIT_FAILURE);
+        }
+        
+        //pthread_create
+        pthread_t tid;
+        void *a = NULL;
+        pthread_create(&tid,NULL, Proxy::proxyServer, &a);
+        //线程分离
+        pthread_detach(tid);
 
-    //use the port again
-    int connect_opt = 1;
-    if(setsockopt(clientProxy_connectfd, SOL_SOCKET,SO_REUSEADDR, (const void *)&connect_opt, sizeof(connect_opt))==-1){
-        perror("Fail to use port again\n");
-        exit(EXIT_FAILURE);
+        //use the port again
+        int connect_opt = 1;
+        if(setsockopt(clientProxy_connectfd, SOL_SOCKET,SO_REUSEADDR, (const void *)&connect_opt, sizeof(connect_opt))==-1){
+            perror("Fail to use port again\n");
+            exit(EXIT_FAILURE);
+        }
     }
+    
 }
 
 
-
-void *Proxy::proxyServer_serverClient(void *){
+void *Proxy::proxyServer(void *){
     //vector char
     char buffer[65536]="";
     ssize_t _recv = recv(clientProxy_connectfd, buffer, 65536, 0);
     if(_recv==-1){
         perror("Fail to receive the message from client\n");
         exit(EXIT_FAILURE);
-        
     }
     
     parse_request(buffer);
-    
+    proxyServer_serverClient();
+    return NULL;
+}
+
+void proxyServer_serverClient(){
     //Send the message from the client to server through proxy
     socket_info serverClient_info = create_socket(addr_client,"80");
     
@@ -112,6 +117,7 @@ void *Proxy::proxyServer_serverClient(void *){
     }
     //send message from server to client through proxy
     char proxy_recv[65536] = "";
+    std::memset(&proxy_recv_mssg,0, proxy_recv_mssg.size());
     while(1){
         //receive message from the server
         size_t recv_resp = recv(serverClient_info.socket_fd, proxy_recv, 65536,0);
@@ -130,10 +136,9 @@ void *Proxy::proxyServer_serverClient(void *){
         }
     }
     std::cout<<proxy_recv_mssg.data()<<std::endl;
-    
-    
-    return NULL;
 }
+
+
 
 void parse_request(char *buffer){
     std::string parse_req = buffer;

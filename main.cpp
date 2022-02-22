@@ -18,5 +18,5 @@ int main(){
     Proxy test;
     test.proxy_bindListen_accept();
     
-    test.proxyServer_serverClient(NULL);
+    test.proxyServer(NULL);
 }

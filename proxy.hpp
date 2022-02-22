@@ -29,9 +29,11 @@ public:
     Proxy(){}
     void proxy_bindListen_accept();
     void Accept();
-    static void *proxyServer_serverClient(void *);
+    static void *proxyServer(void *);
+    
 };
 socket_info create_socket(const char *hostname, const char *port);
 void parse_request(char *buffer);
+void proxyServer_serverClient();
 std::string GET_method(std::string argument);
 #endif /* proxy_hpp */
