@@ -1,0 +1,38 @@
+1: "CONNECT httpbin.org:443 HTTP/1.1" from httpbin.org:443  @ Wed Feb 23 19:14:15 2022
+2: "CONNECT httpbin.org:443 HTTP/1.1" from httpbin.org:443  @ Wed Feb 23 19:14:24 2022
+3: "CONNECT httpbin.org:443 HTTP/1.1" from httpbin.org:443  @ Wed Feb 23 19:14:25 2022
+4: "CONNECT httpbin.org:443 HTTP/1.1" from httpbin.org:443  @ Wed Feb 23 19:14:47 2022
+5: "CONNECT httpbin.org:443 HTTP/1.1" from httpbin.org:443  @ Wed Feb 23 19:14:48 2022
+6: "CONNECT httpbin.org:443 HTTP/1.1" from httpbin.org:443  @ Wed Feb 23 19:15:11 2022
+7: "CONNECT httpbin.org:443 HTTP/1.1" from httpbin.org:443  @ Wed Feb 23 19:15:11 2022
+8: "CONNECT httpbin.org:443 HTTP/1.1" from httpbin.org:443  @ Wed Feb 23 19:15:12 2022
+9: "CONNECT httpbin.org:443 HTTP/1.1" from httpbin.org:443  @ Wed Feb 23 19:15:13 2022
+10: "CONNECT httpbin.org:443 HTTP/1.1" from httpbin.org:443  @ Wed Feb 23 19:15:13 2022
+11: "CONNECT httpbin.org:443 HTTP/1.1" from httpbin.org:443  @ Wed Feb 23 19:15:45 2022
+12: "GET /cache/30 HTTP/1.1" from httpbin.org @ Wed Feb 23 19:15:55 2022
+12: not in cache
+12: Requesting GET /cache/30 HTTP/1.1 from httpbin.org
+13: "GET /cache/30 HTTP/1.1" from httpbin.org @ Wed Feb 23 19:16:06 2022
+13: not in cache
+13: Requesting GET /cache/30 HTTP/1.1 from httpbin.org
+14: "GET /cache/30 HTTP/1.1" from httpbin.org @ Wed Feb 23 19:16:19 2022
+14: not in cache
+14: Requesting GET /cache/30 HTTP/1.1 from httpbin.org
+15: "GET /cache/30 HTTP/1.1" from httpbin.org @ Wed Feb 23 19:16:48 2022
+15: not in cache
+15: Requesting GET /cache/30 HTTP/1.1 from httpbin.org
+12: Received HTTP/1.1 200 OK from httpbin.org
+12: cached
+12: cached, but requires re-validation
+16: "GET /fb/i/icn/feed-icon-10x10.gif HTTP/1.1" from feedburner.google.com @ Wed Feb 23 19:17:05 2022
+16: not in cache
+16: Requesting GET /fb/i/icn/feed-icon-10x10.gif HTTP/1.1 from feedburner.google.com
+13: Received HTTP/1.1 200 OK from httpbin.org
+13: cached
+13: cached, but requires re-validation
+14: Received HTTP/1.1 200 OK from httpbin.org
+14: cached
+14: cached, but requires re-validation
+17: "GET /fb/i/icn/feed-icon-10x10.gif HTTP/1.1" from feedburner.google.com @ Wed Feb 23 19:17:20 2022
+17: not in cache
+17: Requesting GET /fb/i/icn/feed-icon-10x10.gif HTTP/1.1 from feedburner.google.com

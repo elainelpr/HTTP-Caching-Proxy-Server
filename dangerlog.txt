@@ -1,0 +1,13 @@
+Danger log:
+
+1. When we are using the browser to test, we find that sometimes the code have segmentation fault. When we try to use the valgrind to check it. We find that because the size response is too large and cannot receive the whole response. So we use the char buffer[] to store the response temporarily. And when we receive this, we send the message to the client. Ultimately, we use the vector to store the whole message from the server.
+
+2. When we receive the response from the server, to avoid that we cannot receive the whole message, when the proxy receive the message, the proxy send the message to the client immediately. And we use the return value of recv function to judge whether we should stop the loop. Only the return value of recv function is 0, stop the while loop. So when we test GET or POST method, we have to wait for almost 30-40 seconds, the client can receive the response from server.
+
+3. When we are testing, at first, if we send the request, the proxy can handle this normally. But if we send it again, we will suffer from blocking. And then, we try to send, the proxy can work normally. 
+
+4. For the POST method, if the body size is too larger, maybe we cannot solve it. Because we do not use the while loop to receive this request.
+
+5. When we process the 400 Bad Request, we check whether the request has "Host" or this request include "\r\n\r\n". If not, the proxy will send the "400 Bad Request" to the client. We do not send this request to the server and wait for the response from the server.
+
+6. Sometimes we can access the web through browser, but the proxy report "domain name is wrong"(http://cernvax/userd/tbl/hypertext/Conferences/ECHT90/Programme.html). For most webs, the proxy can receive the request normally and send it to the server.
