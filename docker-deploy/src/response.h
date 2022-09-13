@@ -1,5 +1,5 @@
 //
-// Created by Xinyu Guo
+// Created by Peiru Liu
 //
 
 #ifndef ECE568_HW2_MASTER_RESPONSE_H
